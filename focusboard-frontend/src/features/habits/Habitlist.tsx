@@ -32,7 +32,7 @@ export const useUpdateHabit = () => {
 
 export default function HabitList() {
   const { data, isLoading, error } = useHabits();
-  const { mutate: deleteHabitMutate,   isPending: isDeleting } = useDeleteHabit();
+  const { mutate: deleteHabitMutate,   isPending } = useDeleteHabit();
   const { mutate: updateHabitMutate } = useUpdateHabit();
 
   if (isLoading) return <p>Loading habits…</p>;
@@ -43,6 +43,12 @@ export default function HabitList() {
 
 
   return (
+
+  <ul className="space-y-2">
+    {data?.length === 0 && (
+      <p className="text-gray-500 italic">No habits yet. Add your first habit!</p>
+    )}
+
     <ul className="space-y-2">
       {data?.map((habit) => (
         <li
@@ -82,5 +88,7 @@ export default function HabitList() {
       ))}
       
     </ul>
+  );
+  </ul>
   );
 }

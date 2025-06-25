@@ -3,13 +3,19 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import HabitList from "./features/habits/Habitlist";
 import './App.css'
+import Navbar from "./components/NavigationBar";
+import Layout from "./components/Layout";
+
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <h1 className="text-2xl font-bold mb-4">My Habits</h1>
-      <HabitList />
-    </div>
+    <>
+      <Navbar />
+      <Layout>
+        <h1 className="text-2xl font-bold mb-4">My Habits</h1>
+        <HabitList />
+      </Layout>
+    </>
   );
 }
 
