@@ -1,12 +1,28 @@
-import { useState } from "react";
+import { use, useState } from "react";
+import { createHabit } from "./Habitservice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+
+
 
 export default function CreateHabitForm() {
   const [name, setName] = useState(""); 
   const [frequency, setFrequency] = useState("");
 
+  const queryClient = useQueryClient();
+
+const{mutate, isPending, isError, error, isSuccess} = useMutation({
+  mutationFn: createHabit,
+  onSuccess: () => {
+    queryClient.invalidateQueries({queryKey: ["habits"]}); 
+  },
+});
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ name, frequency }); 
+    mutate({ name, frequency }); 
+    setName("");
+    setFrequency("");
   };
 
 
@@ -32,6 +48,13 @@ export default function CreateHabitForm() {
       <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
         Add habit
       </button>
+
+{isPending && <p className="text-blue-500">Submitting...</p>}
+{isError && <p className="text-red-500">Error: {(error as Error).message}</p>}
+{isSuccess && <p className="text-green-500">Habit added!</p>}
+
+
+
     </form>
   );
 }
