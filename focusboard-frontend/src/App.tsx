@@ -5,6 +5,7 @@ import HabitList from "./features/habits/Habitlist";
 import './App.css'
 import Navbar from "./components/NavigationBar";
 import Layout from "./components/Layout";
+import CreateHabitForm from './features/habits/Createhabitform';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Navbar />
       <Layout>
         <h1 className="text-2xl font-bold mb-4">My Habits</h1>
+        <CreateHabitForm />
         <HabitList />
       </Layout>
     </>

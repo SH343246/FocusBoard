@@ -67,6 +67,9 @@ export default function HabitList() {
               isPending ? "opacity-50 cursor-not-allowed" : ""
             }`}
       > {isPending ? "Deleting..." : "Delete Habit"}</button>
+
+
+      
       <button 
       onClick={() => {
       const freqInput = prompt('Enter new frequency:', String(habit.frequency));
