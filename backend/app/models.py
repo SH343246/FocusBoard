@@ -12,3 +12,4 @@ class Habit(Base):
     description = Column(String, nullable=True)
     frequency = Column(String, nullable=False)  
     start_date = Column(DateTime, default=datetime.utcnow)
+    completed = Column(Integer, default=False)

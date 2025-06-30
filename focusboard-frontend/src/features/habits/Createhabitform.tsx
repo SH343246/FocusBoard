@@ -5,11 +5,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 
+
 export default function CreateHabitForm() {
   const [name, setName] = useState(""); 
   const [frequency, setFrequency] = useState("");
-
   const queryClient = useQueryClient();
+  const [error1, setError] = useState("");
 
 const{mutate, isPending, isError, error, isSuccess} = useMutation({
   mutationFn: createHabit,
@@ -20,15 +21,28 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ name, frequency }); 
+    const name1 = name.trim();
+    const frequency1 = frequency.trim();
+
+  if (!name1 || !frequency1) {
+    setError("Name and frequency are required.");
+    return;                       
+  }
+
+    mutate({ name: name1, frequency: frequency1 }); 
     setName("");
     setFrequency("");
+    setError("") 
   };
 
 
 
   return (
     <form onSubmit={(handleSubmit)}>
+
+      {error1 && <p className="text-red-500">{error1}</p>}
+
+
       <div>
         <label className="block font-medium">Habit Name/s</label>
         <input

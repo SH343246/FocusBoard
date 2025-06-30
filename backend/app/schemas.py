@@ -7,13 +7,15 @@ class HabitCreate(BaseModel):
     description: Optional[str] = None
     frequency: str
     start_date: Optional[datetime] = None
+    completed: Optional[bool] = False
 
 class HabitRead(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
     frequency: str
-    start_date: datetime
+    start_date: Optional[datetime] = None
+    completed: bool 
 
     class Config:
         orm_mode = True

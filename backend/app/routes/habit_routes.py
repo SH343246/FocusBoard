@@ -10,9 +10,9 @@ from app.db import engine, get_db
 from app.models import Base, Habit          
 
 Base.metadata.create_all(bind=engine)
-router = APIRouter(prefix = "/habits")
+router = APIRouter()
 
-@router.post("/", response_model=schemas.HabitRead)
+@router.post("/habits", response_model=schemas.HabitRead)
 def create_habit( habit: schemas.HabitCreate, db: Session = Depends(get_db)):
     db_habit = Habit(
         name=habit.name,
@@ -25,11 +25,11 @@ def create_habit( habit: schemas.HabitCreate, db: Session = Depends(get_db)):
     db.refresh(db_habit)
     return db_habit
 
-@router.get("/", response_model=list[schemas.HabitRead])
+@router.get("/habits", response_model=list[schemas.HabitRead])
 def return_all_habits( db: Session = Depends(get_db)):
     return db.query(Habit).all()
     
-@router.get("/{habit_id}", response_model=schemas.HabitRead)
+@router.get("/habits/{habit_id}", response_model=schemas.HabitRead)
 def get_habit_by_id(habit_id: int, db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id).first()
 
@@ -38,7 +38,7 @@ def get_habit_by_id(habit_id: int, db: Session = Depends(get_db)):
 
     return habit
 
-@router.put("/{habit_id}", response_model=schemas.HabitRead)
+@router.put("/habits/{habit_id}", response_model=schemas.HabitRead)
 def update_habit(habit_id: int, updated_data: schemas.HabitCreate, db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id).first()
 
@@ -55,7 +55,7 @@ def update_habit(habit_id: int, updated_data: schemas.HabitCreate, db: Session =
     return habit
 
 
-@router.delete("/{habit_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/habits/{habit_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_habit(habit_id: int, db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id).first()
 
