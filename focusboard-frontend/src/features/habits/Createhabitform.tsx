@@ -11,6 +11,7 @@ export default function CreateHabitForm() {
   const [frequency, setFrequency] = useState("");
   const queryClient = useQueryClient();
   const [error1, setError] = useState("");
+  const [description, setDescription] = useState("");
 
 const{mutate, isPending, isError, error, isSuccess} = useMutation({
   mutationFn: createHabit,
@@ -23,15 +24,17 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
     e.preventDefault();
     const name1 = name.trim();
     const frequency1 = frequency.trim();
+    const description1 = description.trim();
 
   if (!name1 || !frequency1) {
     setError("Name and frequency are required.");
     return;                       
   }
 
-    mutate({ name: name1, frequency: frequency1 }); 
+    mutate({ name: name1, frequency: frequency1, description: description1 }); 
     setName("");
     setFrequency("");
+    setDescription("");
     setError("") 
   };
 
@@ -58,6 +61,14 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
           value={frequency}
           onChange={(e) => setFrequency(e.target.value)} />
+      </div>
+      <div>
+        <label className="block font-medium">Description</label>
+        <input
+          type="text"
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)} />
       </div>
       <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
         Add habit

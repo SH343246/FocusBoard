@@ -11,6 +11,7 @@ export const fetchHabits = async (): Promise<Habit[]> => {
 export const createHabit = async (habit : {
   name: string;
   frequency: string;
+  description?: string;
 
 }): Promise<Habit> => {
   const response = await client.post("/habits", habit);

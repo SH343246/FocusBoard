@@ -7,7 +7,7 @@ export default function ChangeTabs(){
 return (
   <>
   <button 
-    onClick={() => setTab('all')
+    onClick={() => setTab('all')}
       className={`px-4 py-2 rounded ${Tab === 'all' ? 'bg-blue-500 text-white active' : 'bg-gray-200 text-gray-800 undefined'}`}
   >
     All Habits

@@ -7,7 +7,7 @@ import axios from "axios";
 import type { Habit } from "./types.ts";
 
 interface Props {
-  filter: Filter;                           
+  filter?: Filter;                           
 }
 
 export const useDeleteHabit = () => {
@@ -35,7 +35,7 @@ export const useUpdateHabit = () => {
 };
 
 
-export default function HabitList({ filter }: Props) {
+export default function HabitList({ filter}: Props) {
   const { data, isLoading, error } = useHabits();
   const { mutate: deleteHabitMutate,   isPending } = useDeleteHabit();
   const { mutate: updateHabitMutate } = useUpdateHabit();
@@ -43,7 +43,6 @@ export default function HabitList({ filter }: Props) {
   if (isLoading) return <p>Loading habits…</p>;
   if (error)     return <p>Failed to load habits.</p>;
 
-  type Filter = 'all' | 'active' | 'completed';
 
   const filteredHabits = data?.filter(habit => {
   if (filter === 'completed') return habit.completed === true;
@@ -53,7 +52,7 @@ export default function HabitList({ filter }: Props) {
 
 
   return (
-    <div className="container mx-auto px-4 font-sans text-gray-800 leading-relaxed">
+    <div className="max-w-screen-md container mx-auto px-4 font-sans text-gray-800 leading-relaxed">
 
   <ul className="space-y-2">
     {data?.length === 0 && (
@@ -64,16 +63,23 @@ export default function HabitList({ filter }: Props) {
 
     <ul className="space-y-2">
       {filteredHabits?.length === 0 && (
-        <p className="text-gray-500 italic text-base leading-snug">No habits}
+        <p className="text-gray-500 italic text-base leading-snug">No habits</p>)}
       {filteredHabits?.map((habit) => (
         <li
           key={habit.id}
           className="bg-white shadow rounded p-4 border border-gray-200 hover:shadow-md transition"
         >
-          <h3 className="text-xl font-semibold tracking-tight text-gray-900">{habit.name}</h3>
+          <input
+            type="checkbox"
+            checked={habit.completed}
+            onChange={() =>
+              updateHabitMutate({ ...habit, completed: !habit.completed  })}
+            />
+          <h3 className="text-xl md:text-xl font-semibold tracking-tight text-gray-900">{habit.name}</h3>
           <p className="mt-1 text-sm text-gray-600 italic"> Description: {habit.description}</p>
           <p className="mt-1 text-sm text-gray-600">Frequency: {habit.frequency}</p>
           <p className="mt-1 text-sm text-gray-600">start_date: {habit.start_date}</p>
+
           
           <button
       onClick={() => {if(confirm("Are you sure?")) deleteHabitMutate(habit.id);}}

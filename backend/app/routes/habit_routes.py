@@ -8,9 +8,17 @@ from fastapi import status
 from app import models, schemas
 from app.db import engine, get_db          
 from app.models import Base, Habit          
-
+from utils.token_verification import get_current_user
 Base.metadata.create_all(bind=engine)
 router = APIRouter()
+
+
+@router.get("/protected")
+def protected_route(current_user: dict = Depends(get_current_user)):
+    return {
+        "message": f" access granted: {current_user['sub']}",
+        "user_id": current_user['id']
+    }
 
 @router.post("/habits", response_model=schemas.HabitRead)
 def create_habit( habit: schemas.HabitCreate, db: Session = Depends(get_db)):
@@ -18,7 +26,8 @@ def create_habit( habit: schemas.HabitCreate, db: Session = Depends(get_db)):
         name=habit.name,
         description=habit.description,
         frequency=habit.frequency,
-        start_date=habit.start_date or None
+        start_date=habit.start_date or None,
+        completed=habit.completed if habit.completed is not None else False
     )
     db.add(db_habit)
     db.commit()
@@ -49,7 +58,7 @@ def update_habit(habit_id: int, updated_data: schemas.HabitCreate, db: Session =
     habit.description = updated_data.description
     habit.frequency = updated_data.frequency
     habit.start_date = updated_data.start_date
-
+    habit.completed   = updated_data.completed 
     db.commit()
     db.refresh(habit)
     return habit
