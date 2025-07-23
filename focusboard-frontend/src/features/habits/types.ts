@@ -5,4 +5,13 @@ export interface Habit {
   description?: string;
   start_date?: string;
   completed? : boolean;
+
+
+}
+
+export interface Todos {
+  id: number;
+  title: string;
+  description?: string;
+  done: boolean;
 }

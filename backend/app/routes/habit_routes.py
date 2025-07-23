@@ -1,17 +1,24 @@
 from fastapi import FastAPI
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request, HTTPException, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from fastapi import status
+from jose import JWTError
 
+from utils.jwt_handler import create_access_token, decode_refresh_token
 
 from app import models, schemas
 from app.db import engine, get_db          
-from app.models import Base, Habit          
+from app.models import Base, Habit, User, ToDo    
 from utils.token_verification import get_current_user
 Base.metadata.create_all(bind=engine)
 router = APIRouter()
 
+
+@router.get("/me")
+def read_users_me(user: dict = Depends(get_current_user)):
+    return {"id": user["id"], "email": user["sub"]}
 
 @router.get("/protected")
 def protected_route(current_user: dict = Depends(get_current_user)):
@@ -19,6 +26,26 @@ def protected_route(current_user: dict = Depends(get_current_user)):
         "message": f" access granted: {current_user['sub']}",
         "user_id": current_user['id']
     }
+
+@router.post("/refresh")
+def refresh_token(request: Request, db: Session = Depends(get_db)):
+    refresh_token = request.headers.get("Authorization")
+    if not refresh_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing refresh token")
+
+    try:
+        token = refresh_token.replace("Bearer ", "")
+        payload = decode_refresh_token(token)
+        user = db.query(User).filter(User.email == payload["sub"]).first()
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+        new_access_token = create_access_token(data={"sub": user.email, "id": user.id})
+        return {"access_token": new_access_token}
+
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
 @router.post("/habits", response_model=schemas.HabitRead)
 def create_habit( habit: schemas.HabitCreate, db: Session = Depends(get_db)):
