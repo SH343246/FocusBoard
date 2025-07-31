@@ -1,5 +1,15 @@
 {
   "files": [],
+  "include": ["src", "vite-env.d.ts"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["node"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+  },
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

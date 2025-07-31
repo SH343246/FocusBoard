@@ -41,46 +41,62 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
 
 
   return (
-    <form onSubmit={(handleSubmit)}>
+<form
+  onSubmit={handleSubmit}
+  /* ⭑ smaller outer padding & gap */
+  className="backdrop-blur-md bg-white/50 dark:bg-white/10 rounded-2xl border border-white/40 shadow-sm p-2 space-y-2"
+>
+  {error1 && <p className="text-xs text-red-500">{error1}</p>}
 
-      {error1 && <p className="text-red-500">{error1}</p>}
+  {/* Habit Name */}
+  <div className="space-y-0.5">          {/* ⭑ cut row gap */}
+    <label className="block text-xs font-medium">Habit Name</label>  {/* ⭑ text-xs */}
+    <input
+      type="text"
+      className="w-full px-2 py-1 text-xs rounded-md bg-white/80 dark:bg-zinc-900 placeholder-gray-500
+                 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+    />
+  </div>
 
+  {/* Frequency */}
+  <div className="space-y-0.5">
+    <label className="block text-xs font-medium">Frequency</label>
+    <input
+      type="text"
+      className="w-full px-2 py-1 text-xs rounded-md bg-white/80 dark:bg-zinc-900 placeholder-gray-500
+                 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      value={frequency}
+      onChange={(e) => setFrequency(e.target.value)}
+    />
+  </div>
 
-      <div>
-        <label className="block font-medium">Habit Name/s</label>
-        <input
-          type="text"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          value={name}
-          onChange={(e) => setName(e.target.value)} />
-      </div>
-      <div>
-        <label className="block font-medium">Frequency</label>
-        <input
-          type="text"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          value={frequency}
-          onChange={(e) => setFrequency(e.target.value)} />
-      </div>
-      <div>
-        <label className="block font-medium">Description</label>
-        <input
-          type="text"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)} />
-      </div>
-      <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-        Add habit
-      </button>
+  {/* Description */}
+  <div className="space-y-0.5">
+    <label className="block text-xs font-medium">Description</label>
+    <input
+      type="text"
+      className="w-full px-2 py-1 text-xs rounded-md bg-white/80 dark:bg-zinc-900 placeholder-gray-500
+                 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      value={description}
+      onChange={(e) => setDescription(e.target.value)}
+    />
+  </div>
 
-{isPending && <p className="text-blue-500">Submitting...</p>}
-{isError && <p className="text-red-500">Error: {(error as Error).message}</p>}
-{isSuccess && <p className="text-green-500">Habit added!</p>}
+  {/* ⭑ shorter button, smaller top‑margin */}
+  <button
+    type="submit"
+    className="mt-2 bg-blue-500 text-black px-3 py-1 text-xs rounded-md hover:bg-blue-600 transition"
+  >
+    Add habit
+  </button>
 
+  {isPending && <p className="text-xs text-blue-500">Submitting…</p>}
+  {isError   && <p className="text-xs text-red-500">Error: {(error as Error).message}</p>}
+  {isSuccess && <p className="text-xs text-green-500">Habit added!</p>}
+</form>
 
-
-    </form>
   );
 }
 

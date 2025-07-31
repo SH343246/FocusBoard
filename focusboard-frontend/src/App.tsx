@@ -21,16 +21,25 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+
         <Route path="/login" element={<Login />} />
+      <Route
+          path="/dashboard"
+          element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          }
+        />
       </Routes>
     </BrowserRouter>
       <Navbar />
-      <Layout>
+      {/* <Layout>
         <h1 className="text-2xl font-bold mb-4">My Habits</h1>
         <CreateHabitForm />
         <HabitList />
-      </Layout>
+      </Layout> */}
     </>
   );
 }

@@ -102,4 +102,18 @@ def delete_habit(habit_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
+
+@router.patch("/habits/{habit_id}/toggle", response_model=schemas.HabitRead)
+def toggle_habit_completed(habit_id: int, db: Session = Depends(get_db)):
+    habit = db.query(Habit).filter(Habit.id == habit_id).first()
+
+    if habit is None:
+        raise HTTPException(status_code=404, detail="Habit not found")
+
+    habit.completed = not habit.completed
+    db.commit()
+    db.refresh(habit)
+    return habit
+
+
 __all__ = ["router"]

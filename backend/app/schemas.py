@@ -23,6 +23,7 @@ class HabitRead(BaseModel):
 class ToDoCreate(BaseModel):
     title: str
     description: Optional[str] = None
+    done: Optional[bool] = False
   
 
 class ToDoRead(BaseModel):
@@ -40,3 +41,32 @@ class ToDoUpdate(BaseModel):
     description: Optional[str] = None
     done: Optional[bool] = None
 
+class WidgetRead(BaseModel):
+    id: int
+    name: str
+    slug: str
+    description: str | None
+
+    class Config:
+        orm_mode = True
+
+class UserWidgetRead(BaseModel):
+    id: int
+    widget_id: int
+    user_id: int
+    enabled: bool
+    position: Optional[int] = None
+    widget: WidgetRead
+    style: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+class UserWidgetUpdate(BaseModel):
+    enabled: Optional[bool] = None
+    style: Optional[str] = None
+    position: Optional[int] = None
+
+class WidgetOrderUpdate(BaseModel):
+    id: int
+    position: int

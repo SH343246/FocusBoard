@@ -27,3 +27,8 @@ export const updateHabit = async (habit : Habit): Promise<Habit> => {
   const {data} = await client.put(`/habits/${habit.id}`, habit);
   return data
 };
+
+export const CompleteHabit = async (habit: Habit): Promise<Habit> => {
+  const { data } = await client.patch(`/habits/${habit.id}/toggle`);
+  return data;
+};

@@ -8,21 +8,21 @@ return (
   <>
   <button 
     onClick={() => setTab('all')}
-      className={`px-4 py-2 rounded ${Tab === 'all' ? 'bg-blue-500 text-white active' : 'bg-gray-200 text-gray-800 undefined'}`}
+      className={`px-4 py-2 rounded ${Tab === 'all' ? 'bg-blue-500 text-black active' : 'bg-gray-200 text-black-800 undefined'}`}
   >
     All Habits
   </button>
     
 <button 
     onClick={() => setTab('active')}
-      className={`px-4 py-2 rounded ${Tab === 'active' ? 'bg-blue-500 text-white active' : 'bg-gray-200 text-gray-800 undefined'}`}
+      className={`px-4 py-2 rounded ${Tab === 'active' ? 'bg-blue-500 text-black active' : 'bg-gray-200 text-black-800 undefined'}`}
   >
     Active Habits
   </button> 
 
 <button 
     onClick={() => setTab('completed')}
-      className={`px-4 py-2 rounded ${Tab === 'completed' ? 'bg-blue-500 text-white active' : 'bg-gray-200 text-gray-800 undefined'}`}
+      className={`px-4 py-2 rounded ${Tab === 'completed' ? 'bg-blue-500 text-black active' : 'bg-gray-200 text-black-800 undefined'}`}
   >
     Completed Habits
   </button>

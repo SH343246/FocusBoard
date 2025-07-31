@@ -5,7 +5,7 @@ export default function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("➡️ arrived at", window.location.href);
+    console.log(" arrived at", window.location.href);
     console.log("search →", window.location.search);
     const urlParams = new URLSearchParams(window.location.search);
     const accessToken = urlParams.get("access_token");

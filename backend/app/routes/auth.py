@@ -5,7 +5,7 @@ from utils.jwt_handler import create_access_token, create_refresh_token
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from app.models import User
+from app.models import User, Widget, UserWidget
 from app.db import get_db  
 
 from authlib.integrations.starlette_client import OAuth
@@ -14,7 +14,6 @@ import os
 
 router = APIRouter()
 oauth = OAuth()
-
 oauth.register(
     name="google",
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
@@ -69,8 +68,29 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
     )
     print("Redirecting to:", redirect_url)
 
+    widgets = db.query(Widget).all()
+    for widget in widgets:
+        existing = (
+            db.query(UserWidget)
+            .filter_by(user_id=user.id, widget_id=widget.id)
+            .first()
+        )
+
+    if not existing:
+        user_widget = UserWidget(
+            user_id=user.id,
+            widget_id=widget.id,
+            enabled=False,
+            position=None,
+            style=None,
+        )
+        db.add(user_widget)
+
+    db.commit()
+
 
 
     return RedirectResponse(redirect_url)
 
 
+  
