@@ -1,0 +1,15 @@
+backend/.env
+focusboard-frontend/.env
+
+**/__pycache__/
+*.pyc
+backend/.venv
+
+focusboard-frontend/node_modules
+focusboard-frontend/dist
+focusboard-frontend/dist-ssr
+**/*.log
+
+.vscode/
+.idea/
+.DS_Store

@@ -1,16 +1,17 @@
+# backend/app/routes/auth.py
 import os, secrets
-from dotenv import load_dotenv
-load_dotenv()
-from utils.jwt_handler import create_access_token, create_refresh_token
+from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from fastapi import Depends
-from app.models import User, Widget, UserWidget
-from app.db import get_db  
-from fastapi import HTTPException
 from authlib.integrations.starlette_client import OAuth
-from fastapi import APIRouter, Request
-import os
+
+from app.db import get_db
+from app.models import User, Widget, UserWidget
+from utils.jwt_handler import create_access_token, create_refresh_token
+
+if not os.getenv("RENDER"):
+    from dotenv import load_dotenv
+    load_dotenv()
 
 router = APIRouter()
 oauth = OAuth()
@@ -21,6 +22,8 @@ oauth.register(
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
     client_kwargs={
         "scope": "openid email profile",
+        "prompt": "consent",
+        "access_type": "offline",
     },
 )
 

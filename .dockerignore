@@ -1,5 +1,7 @@
-# flyctl launch added from .gitignore
-# Logs
+*.env
+backend/.env
+focusboard-frontend/.env
+
 **/logs
 **/*.log
 **/npm-debug.log*
@@ -13,7 +15,9 @@
 **/dist-ssr
 **/*.local
 
-# Editor directories and files
+**/__pycache__/
+**/*.pyc
+
 **/.vscode/*
 !**/.vscode/extensions.json
 **/.idea
@@ -23,4 +27,8 @@
 **/*.njsproj
 **/*.sln
 **/*.sw?
+
+.git
+.gitignore
 fly.toml
+

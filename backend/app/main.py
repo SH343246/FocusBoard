@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-load_dotenv()
 
 import os
 from pathlib import Path
@@ -8,6 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
+if not os.getenv("RENDER"):  
+    from dotenv import load_dotenv
+    load_dotenv()
+
 from app.routes import auth
 from app.routes.habit_routes import router as habit_routes
 from app.routes.todo_routes import router as todo_routes
@@ -15,9 +18,7 @@ from app.routes.widget_routes import router as widget_routes
 from app.db import get_db
 from app.models import Widget
 
-if not os.getenv("RENDER"):  
-    from dotenv import load_dotenv
-    load_dotenv()
+
 
 print("GOOGLE_CLIENT_ID =", os.getenv("GOOGLE_CLIENT_ID"))
 
@@ -29,30 +30,31 @@ app.include_router(widget_routes)
 app.include_router(todo_routes)
 app.include_router(auth.router)
 
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET_KEY"),
+    same_site="lax",     
+    https_only=True    
+)
 
 
 FRONTEND_DIST = os.getenv("FRONTEND_DIST", "static")
 static_path = Path(__file__).parent.parent / FRONTEND_DIST
-app.mount("/", StaticFiles(directory=static_path, html=True), name="frontend")
+app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
 
 
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=os.getenv("SESSION_SECRET_KEY"),
-    same_site="none",     
-    https_only=True    
-)
+@app.get("/", include_in_schema=False)
+def spa_index():
+    return FileResponse(static_path / "index.html")
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=[
-#         "https://focusboard-frontend.fly.dev",
-#         "https://backend-solitary-silence-6711.fly.dev"
-#     ],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+@app.get("/{full_path:path}", include_in_schema=False)
+def spa_catch_all(full_path: str):
+    # Avoid swallowing API paths if any slipped through
+    if full_path.startswith(("api/", "auth/google", "auth/google/callback")):
+        # Let routers handle these if they exist
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404)
+    return FileResponse(static_path / "index.html")
 
 def seed_widgets():
     db = next(get_db())

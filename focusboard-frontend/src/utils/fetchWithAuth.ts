@@ -1,6 +1,6 @@
 import.meta.env.VITE_API_BASE_URL
 
-export async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
+ export async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
   let accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
   const authHeaders = {
@@ -12,8 +12,7 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}): Pro
     headers: authHeaders,
   });
   if (res.status === 401 && refreshToken) {
-    const refreshRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/refresh`
-, {
+     const refreshRes = await fetch(`/refresh`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${refreshToken}`,
