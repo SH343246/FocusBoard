@@ -23,8 +23,14 @@ export default function TodoList() {
     setNewTitle("");
     setNewDescription("");
   };
-  const activeTodos = todos?.filter((todo: Todos) => !todo.done);
-  const completedTodos = todos?.filter((todo : Todos) => todo.done);
+
+  const list: Todos[] = Array.isArray(todos) ? (todos as Todos[]) : [];
+if (!Array.isArray(todos) && todos !== undefined) {
+  console.error("Expected todos array; got:", todos);
+}
+
+const activeTodos = list.filter(t => !t.done);
+const completedTodos = list.filter(t => t.done);
 
 if (isLoading) {
   return (
@@ -69,7 +75,7 @@ if (isLoading) {
         </button>
       </form>
 
-      {todos?.length === 0 && (
+      {list?.length === 0 && (
         <p className="text-black-500 italic text-base leading-snug">No todos yet. Add your first todo!</p>
       )}
 

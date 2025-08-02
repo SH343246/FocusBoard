@@ -24,11 +24,21 @@ print("GOOGLE_CLIENT_ID =", os.getenv("GOOGLE_CLIENT_ID"))
 
 app = FastAPI()
 
-
+api = APIRouter(prefix="/api")
 app.include_router(habit_routes)
 app.include_router(widget_routes)
 app.include_router(todo_routes)
 app.include_router(auth.router)
+app.include_router(api)
+
+FRONTEND_DIST = os.getenv("FRONTEND_DIST", "static")
+static_path = Path(__file__).parent.parent / FRONTEND_DIST
+app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
+
+
+@app.get("/{full_path:path}")
+def spa_index(full_path: str):
+    return FileResponse(static_path / "index.html")
 
 app.add_middleware(
     SessionMiddleware,
@@ -38,20 +48,11 @@ app.add_middleware(
 )
 
 
-FRONTEND_DIST = os.getenv("FRONTEND_DIST", "static")
-static_path = Path(__file__).parent.parent / FRONTEND_DIST
-app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
 
-
-@app.get("/", include_in_schema=False)
-def spa_index():
-    return FileResponse(static_path / "index.html")
 
 @app.get("/{full_path:path}", include_in_schema=False)
 def spa_catch_all(full_path: str):
-    # Avoid swallowing API paths if any slipped through
     if full_path.startswith(("api/", "auth/google", "auth/google/callback")):
-        # Let routers handle these if they exist
         from fastapi import HTTPException
         raise HTTPException(status_code=404)
     return FileResponse(static_path / "index.html")

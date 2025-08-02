@@ -1,7 +1,7 @@
 import axios from "axios";
 import { logout } from "../utils/Logout";
 
-const baseURL = import.meta.env.DEV ? "http://localhost:8000" : ""; // dev uses localhost backend, prod is same origin
+const baseURL = import.meta.env.DEV ? "http://localhost:8000/api" : "/api"; 
 
 
 const api = axios.create({
