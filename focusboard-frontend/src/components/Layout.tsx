@@ -9,7 +9,7 @@ export default function Layout({ children }: Props) {
 //<div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#e2e8f0] to-[#cbd5e1] p-4 text-black-900">
 //<div className="w-screen min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#e2e8f0] to-[#cbd5e1] text-black-900">
    // <div className="w-full min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#e2e8f0] to-[#cbd5e1] text-black-900 overflow-x-hidden">
-    <div className ="fixed inset-0   /* fills the entire viewport */
+    <div className ="fixed inset-0   
                  overflow-x-hidden
                  bg-gradient-to-br from-[#f7c0b2] via-[#b2cbf7] to-[#f7efb2]
                  dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900

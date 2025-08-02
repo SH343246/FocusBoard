@@ -43,13 +43,11 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
   return (
 <form
   onSubmit={handleSubmit}
-  /* ⭑ smaller outer padding & gap */
   className="backdrop-blur-md bg-white/50 dark:bg-white/10 rounded-2xl border border-white/40 shadow-sm p-2 space-y-2"
 >
   {error1 && <p className="text-xs text-red-500">{error1}</p>}
 
-  {/* Habit Name */}
-  <div className="space-y-0.5">          {/* ⭑ cut row gap */}
+  <div className="space-y-0.5">      
     <label className="block text-xs font-medium">Habit Name</label>  {/* ⭑ text-xs */}
     <input
       type="text"
@@ -60,7 +58,6 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
     />
   </div>
 
-  {/* Frequency */}
   <div className="space-y-0.5">
     <label className="block text-xs font-medium">Frequency</label>
     <input
@@ -72,7 +69,6 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
     />
   </div>
 
-  {/* Description */}
   <div className="space-y-0.5">
     <label className="block text-xs font-medium">Description</label>
     <input
@@ -84,7 +80,6 @@ const{mutate, isPending, isError, error, isSuccess} = useMutation({
     />
   </div>
 
-  {/* ⭑ shorter button, smaller top‑margin */}
   <button
     type="submit"
     className="mt-2 bg-blue-500 text-black px-3 py-1 text-xs rounded-md hover:bg-blue-600 transition"

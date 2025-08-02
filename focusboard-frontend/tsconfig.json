@@ -1,15 +1,24 @@
 {
   "files": [],
-  "include": ["src", "vite-env.d.ts"],
+  "include": ["src", "vite-env.d.ts"],       
+  "exclude": ["vite.config.ts"],             
   "compilerOptions": {
+    "target": "ES2015",
+    "jsx": "react-jsx",
+
+    "outDir": "dist",
+    "rootDir": "src",
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
+
     "types": ["node"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler"
   },
+
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

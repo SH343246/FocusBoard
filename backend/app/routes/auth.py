@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 from app.models import User, Widget, UserWidget
 from app.db import get_db  
-
+from fastapi import HTTPException
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Request
 import os
@@ -41,6 +41,7 @@ async def login(request: Request):
 @router.get("/auth/google/callback")
 async def auth_callback(request: Request, db: Session = Depends(get_db)):
     token = await oauth.google.authorize_access_token(request)
+    print("OAuth token:", token)
 
     print("OAuth token response:", token)
     if "access_token" not in token:
@@ -48,7 +49,10 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
     if "refresh_token" not in token:
         print(" No refresh token returned — check if prompt='consent' + access_type='offline' were set.")
 
-    user_info = token["userinfo"]    
+    user_info = token["userinfo"]  
+    if not user_info:
+        raise HTTPException(status_code=400, detail="Missing user info from Google")
+
     email = user_info["email"]
     name  = user_info.get("name")
 
@@ -62,10 +66,11 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
     access_token  = create_access_token(data={"sub": user.email, "id": user.id})
     refresh_token = create_refresh_token(data={"sub": user.email, "id": user.id})
 
+    frontend_redirect = os.getenv("FRONTEND_REDIRECT_URI")
     redirect_url = (
-        "http://localhost:5173/auth/callback"
-        f"?access_token={access_token}&refresh_token={refresh_token}"
-    )
+    f"{frontend_redirect}?access_token={access_token}&refresh_token={refresh_token}"
+)
+
     print("Redirecting to:", redirect_url)
 
     widgets = db.query(Widget).all()
@@ -76,15 +81,15 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
             .first()
         )
 
-    if not existing:
-        user_widget = UserWidget(
-            user_id=user.id,
-            widget_id=widget.id,
-            enabled=False,
-            position=None,
-            style=None,
-        )
-        db.add(user_widget)
+        if not existing:
+            user_widget = UserWidget(
+                user_id=user.id,
+                widget_id=widget.id,
+                enabled=False,
+                position=None,
+                style=None,
+            )
+            db.add(user_widget)
 
     db.commit()
 

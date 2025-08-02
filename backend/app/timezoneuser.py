@@ -3,7 +3,6 @@ from app.models import User, Widget, UserWidget
 
 db = SessionLocal()
 
-# Assume there's at least one user
 user = db.query(User).first()
 
 if not user:
@@ -25,4 +24,4 @@ for widget in db.query(Widget).all():
 
 db.commit()
 db.close()
-print("✅ Seeded UserWidgets")
+print(" Seeded UserWidgets")

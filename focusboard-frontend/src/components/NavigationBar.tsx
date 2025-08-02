@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
+import.meta.env.VITE_API_BASE_URL
 
 export default function NavigationBar() {
   const [email, setEmail] = useState<string | null>(null);
@@ -7,7 +8,7 @@ export default function NavigationBar() {
  useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      fetchWithAuth("http://localhost:8000/me")
+      fetchWithAuth(`${import.meta.env.VITE_API_BASE_URL}/me`)
         .then((res) => res.json())
         .then((data) => setEmail(data.email))
         .catch(() => setEmail(null));

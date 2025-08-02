@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
 import { logout } from "../utils/Logout";
+import.meta.env.VITE_API_BASE_URL
 
 import { useTodos } from "../features/todo/Usetodo";
 import TodoList from "../features/todo/Todolist";
@@ -11,23 +12,21 @@ import ChangeTabs from "../features/habits/Changetabs";
 
 import { CardWrapper } from "@/components/cardwrapper";
 import { ListTodo, LayoutGrid, Repeat } from "lucide-react";
+import api from "../api/axiosinstance";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState<{ id: number; email: string } | null>(null);
   const { data: todos } = useTodos();
 
   useEffect(() => {
-    fetchWithAuth("http://localhost:8000/me")
-      .then((r) => r.json())
-      .then(setUserData)
-      .catch(console.error);
+    api.get("/me")
+     .then((r) => setUserData(r.data))
+     .catch(console.error);
   }, []);
 
   return (
     <main className="px-6 py-8 w-full">
-      {/* Centered wrapper */}
       <div className="w-full max-w-screen-xl mx-auto">
-        {/* Tabs and heading */}
         <h1 className="text-3xl font-bold text-center mb-2">Dashboard</h1>
         <button
           onClick={logout}
@@ -37,7 +36,7 @@ export default function Dashboard() {
         </button>
         {userData && (
           <p className="text-center mb-6 text-sm">
-            Email: {userData.email} (User ID: {userData.id})
+            Email: {userData.email} 
           </p>
         )}
 

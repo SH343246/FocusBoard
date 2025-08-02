@@ -1,4 +1,3 @@
-# scripts/seed_timezone_widget.py
 from app.db import SessionLocal
 from app.models import Widget
 

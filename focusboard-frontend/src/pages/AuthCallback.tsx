@@ -15,7 +15,8 @@ export default function AuthCallback() {
 
       if (accessToken && refreshToken) {
       localStorage.setItem("access_token", accessToken);
-      localStorage.setItem("refresh_token", refreshToken);      
+      localStorage.setItem("refresh_token", refreshToken); 
+      window.history.replaceState({}, "", "/dashboard");    
       navigate("/dashboard"); 
     } else if (window.location.pathname === "/auth/callback") {
       console.warn("token is missing:", { accessToken, refreshToken });
