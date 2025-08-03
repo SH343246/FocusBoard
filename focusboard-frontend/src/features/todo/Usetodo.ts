@@ -8,7 +8,7 @@ export function useTodos  () {
  return useQuery({
   queryKey: TODOS_KEY,
   queryFn: async () => {
-  const response = await api.get("/todos");
+  const response = await api.get("/todos/");
     return response.data;
   }
  });
