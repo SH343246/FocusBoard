@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from authlib.integrations.starlette_client import OAuth
-
+from authlib.integrations.base_client.errors import MismatchingStateError
 from app.db import get_db
 from app.models import User, Widget, UserWidget
 from utils.jwt_handler import create_access_token, create_refresh_token
@@ -35,18 +35,18 @@ async def login(request: Request):
     return await oauth.google.authorize_redirect(
         request,
         redirect_uri,
-        # nonce=nonce,         
         prompt="consent",    
         access_type="offline",
     )
 
-
-
 @router.get("/auth/google/callback")
 async def auth_callback(request: Request, db: Session = Depends(get_db)):
-    token = await oauth.google.authorize_access_token(request)
-    print("OAuth token:", token)
+    try:
+        token = await oauth.google.authorize_access_token(request)
+    except MismatchingStateError:
+        return RedirectResponse("/login?error=state", status_code=302)
 
+    print("OAuth token:", token)
     print("OAuth token response:", token)
     if "access_token" not in token:
         raise HTTPException(status_code=400, detail="Missing access token from Google")
@@ -96,7 +96,7 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
             db.add(user_widget)
 
     db.commit()
-
+    return RedirectResponse(redirect_url)
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
@@ -106,24 +106,15 @@ async def refresh_access_token(payload: dict):
     rt = payload.get("refresh_token")
     if not rt:
         raise HTTPException(status_code=400, detail="refresh_token required")
-
     try:
         data = jwt.decode(rt, SECRET_KEY, algorithms=[ALGORITHM])
     except JWTError:
         raise HTTPException(status_code=401, detail="bad refresh token")
-
     if data.get("type") != "refresh":
         raise HTTPException(status_code=401, detail="not a refresh token")
-
     user_id = data.get("id")
     user_email = data.get("sub")
     if not user_id or not user_email:
         raise HTTPException(status_code=401, detail="bad refresh token")
-
     new_access = create_access_token(data={"sub": user_email, "id": user_id})
     return {"access_token": new_access}
-
-
-
-
-  
