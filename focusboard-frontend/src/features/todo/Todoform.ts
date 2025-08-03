@@ -8,7 +8,7 @@ export function Createtodo() {
 
   return useMutation({
     mutationFn: (data: { title: string; description?: string }) =>
-      api.post("/todos", data).then(res => res.data as Todos),
+      api.post("/todos/", data).then(res => res.data as Todos),
     
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TODOS_KEY });
