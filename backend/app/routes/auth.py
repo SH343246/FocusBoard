@@ -8,7 +8,7 @@ from authlib.integrations.starlette_client import OAuth
 from app.db import get_db
 from app.models import User, Widget, UserWidget
 from utils.jwt_handler import create_access_token, create_refresh_token
-
+from jose import JWTError, jwt
 if not os.getenv("RENDER"):
     from dotenv import load_dotenv
     load_dotenv()
@@ -98,8 +98,32 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
     db.commit()
 
 
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
-    return RedirectResponse(redirect_url)
+@router.post("/api/refresh")
+async def refresh_access_token(payload: dict):
+    rt = payload.get("refresh_token")
+    if not rt:
+        raise HTTPException(status_code=400, detail="refresh_token required")
+
+    try:
+        data = jwt.decode(rt, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        raise HTTPException(status_code=401, detail="bad refresh token")
+
+    if data.get("type") != "refresh":
+        raise HTTPException(status_code=401, detail="not a refresh token")
+
+    user_id = data.get("id")
+    user_email = data.get("sub")
+    if not user_id or not user_email:
+        raise HTTPException(status_code=401, detail="bad refresh token")
+
+    new_access = create_access_token(data={"sub": user_email, "id": user_id})
+    return {"access_token": new_access}
+
+
 
 
   
