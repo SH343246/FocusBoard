@@ -29,22 +29,21 @@ app.include_router(auth.router)
 app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SESSION_SECRET_KEY"),
-    same_site="lax",
-    https_only=True,
-)
+    same_site="none",      
+    https_only=True,       )
 
 FRONTEND_DIST = os.getenv("FRONTEND_DIST", "static")
 static_path = Path(__file__).parent.parent / FRONTEND_DIST
-app.mount("/", StaticFiles(directory=static_path, html=True), name="frontend")
-
-@app.get("/healthz", include_in_schema=False)
-def healthz():
-    return {"ok": True}
+app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
 
 
+@app.get("/", include_in_schema=False)
+def root_index():
+    return FileResponse(static_path / "index.html")
 
-
-
+@app.get("/auth/callback", include_in_schema=False)
+def spa_auth_callback():
+    return FileResponse(static_path / "index.html")
 
 @app.get("/{full_path:path}", include_in_schema=False)
 def spa_catch_all(full_path: str):
@@ -52,6 +51,7 @@ def spa_catch_all(full_path: str):
         from fastapi import HTTPException
         raise HTTPException(status_code=404)
     return FileResponse(static_path / "index.html")
+
 
 def seed_widgets():
     db = next(get_db())
