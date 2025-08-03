@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, RedirectResponse
 import os
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware

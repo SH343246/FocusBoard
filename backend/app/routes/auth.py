@@ -35,8 +35,9 @@ async def login(request: Request):
     return await oauth.google.authorize_redirect(
         request,
         redirect_uri,
-        nonce=nonce,         
+        # nonce=nonce,         
         prompt="consent",    
+        access_type="offline",
     )
 
 

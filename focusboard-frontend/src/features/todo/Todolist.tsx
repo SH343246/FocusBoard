@@ -24,13 +24,12 @@ export default function TodoList() {
     setNewDescription("");
   };
 
-  const list: Todos[] = Array.isArray(todos) ? (todos as Todos[]) : [];
-if (!Array.isArray(todos) && todos !== undefined) {
+ const list = Array.isArray(todos) ? todos : [];
+if (todos !== undefined && !Array.isArray(todos)) {
   console.error("Expected todos array; got:", todos);
 }
-
-const activeTodos = list.filter(t => !t.done);
-const completedTodos = list.filter(t => t.done);
+const activeTodos = list.filter((todo: Todos) => !todo.done);
+const completedTodos = list.filter((todo: Todos) => todo.done);
 
 if (isLoading) {
   return (
