@@ -37,6 +37,8 @@ Infra: Render (web service + managed Postgres)
 ## Move / Collapse Widgets
 ![Rearranging widgets](Gifs/Move-and-Collapse-Widgets.gif)
 
+## FocusBoard website: https://focusboard.onrender.com
+
 ## Set it up yourself (optional)
 
 ### Prereqs
