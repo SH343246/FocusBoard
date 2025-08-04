@@ -88,14 +88,16 @@ async def weather(city: str | None = Query(default=None)):
     return r.json()
 
 
+
 @router.get("/news")
 async def news():
     key = os.getenv("NEWS_API_KEY")
     if not key:
         raise HTTPException(status_code=500, detail="NEWS_API_KEY not set")
-    params = {"country": "us", "apiKey": key}
+    url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={key}"
     async with httpx.AsyncClient(timeout=10) as client:
-        r = await client.get("https://newsapi.org/v2/top-headlines", params=params)
+        r = await client.get(url)
     if r.status_code != 200:
         raise HTTPException(status_code=r.status_code, detail="news upstream error")
     return r.json()
+
