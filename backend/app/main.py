@@ -1,15 +1,12 @@
 from dotenv import load_dotenv
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, RedirectResponse
 import os
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-
-if not os.getenv("RENDER"):  
-    from dotenv import load_dotenv
-    load_dotenv()
+from sqlalchemy.orm import Session
 
 from app.routes import auth
 from app.routes.habit_routes import router as habit_routes
@@ -20,35 +17,33 @@ from app.models import Widget
 
 
 
-print("GOOGLE_CLIENT_ID =", os.getenv("GOOGLE_CLIENT_ID"))
 
 app = FastAPI()
 
-api = APIRouter(prefix="/api")
-app.include_router(habit_routes)
-app.include_router(widget_routes)
-app.include_router(todo_routes)
+app.include_router(habit_routes,  prefix="/api")
+app.include_router(widget_routes, prefix="/api")
+app.include_router(todo_routes,   prefix="/api")
+
 app.include_router(auth.router)
-app.include_router(api)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET_KEY"),
+    same_site="none",      
+    https_only=True,       )
 
 FRONTEND_DIST = os.getenv("FRONTEND_DIST", "static")
 static_path = Path(__file__).parent.parent / FRONTEND_DIST
 app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
 
 
-@app.get("/{full_path:path}")
-def spa_index(full_path: str):
+@app.get("/", include_in_schema=False)
+def root_index():
     return FileResponse(static_path / "index.html")
 
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=os.getenv("SESSION_SECRET_KEY"),
-    same_site="lax",     
-    https_only=True    
-)
-
-
-
+@app.get("/auth/callback", include_in_schema=False)
+def spa_auth_callback():
+    return FileResponse(static_path / "index.html")
 
 @app.get("/{full_path:path}", include_in_schema=False)
 def spa_catch_all(full_path: str):
@@ -57,14 +52,24 @@ def spa_catch_all(full_path: str):
         raise HTTPException(status_code=404)
     return FileResponse(static_path / "index.html")
 
-def seed_widgets():
+
+from sqlalchemy.orm import Session
+from app.models import Widget
+
+@app.on_event("startup")
+def ensure_widgets_seed():
     db = next(get_db())
-    widget_types = [
-        {"type": "weather", "description": "displays current weather"},
-        {"type": "quote", "description": "a motivational quote"},
-        {"type": "news", "description": "news headlines"},
+    data = [
+        {"name":"Crypto","description":"crypto prices","slug":"crypto"},
+        {"name":"Weather","description":"weather","slug":"weather"},
+        {"name":"Nasa","description":"nasa apod","slug":"nasa"},
+        {"name":"News","description":"top headlines","slug":"news"},
+        {"name":"Timezone","description":"local time","slug":"timezone"},
+        {"name":"Quote","description":"daily quote","slug":"quote"},
+        {"name":"Joke","description":"random joke","slug":"joke"},
     ]
-    for w in widget_types:
-        if not db.query(Widget).filter_by(type=w["type"]).first():
+    for w in data:
+        if not db.query(Widget).filter_by(slug=w["slug"]).first():
             db.add(Widget(**w))
     db.commit()
+

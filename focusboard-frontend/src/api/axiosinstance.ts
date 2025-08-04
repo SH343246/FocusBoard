@@ -27,26 +27,26 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshResponse = await api.post("/refresh"); 
+        const refreshToken = localStorage.getItem("refresh_token");
+        if (!refreshToken) throw new Error("No refresh token in storage");
+
+        const refreshResponse = await api.post("/refresh", { refresh_token: refreshToken });
         const newAccessToken = refreshResponse.data.access_token;
 
         localStorage.setItem("access_token", newAccessToken);
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
-        return api(originalRequest); 
+        return api(originalRequest);
       } catch (refreshErr) {
-        console.error("Refresh failed, logging out");
+        console.error("Refresh issue, logging out");
         logout();
         return Promise.reject(refreshErr);
       }
-    } else if (err.request) {
-      console.error(`No response received for ${err.config.url}`);
-    } else {
-      console.error('Axios config error:', err.message);
     }
 
     return Promise.reject(err);
   }
 );
+
 
 export default api;
