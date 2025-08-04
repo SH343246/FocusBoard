@@ -51,7 +51,7 @@ if (isLoading) {
 
    <div className="max-w-screen-md container mx-auto px-4 font-sans text-black-800 leading-relaxed"> 
 
-      <h2 className="text-xl font-bold mb-4">Todos</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Todos</h2> */}
 
       <form onSubmit={handleAdd} 
   className="mb-4 backdrop-blur-md bg-white/50 dark:bg-white/10 rounded-2xl border border-white/40 shadow-sm p-4 space-y-3">

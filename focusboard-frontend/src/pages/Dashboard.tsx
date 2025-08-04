@@ -27,7 +27,7 @@ export default function Dashboard() {
   return (
     <main className="px-6 py-8 w-full">
       <div className="w-full max-w-screen-xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-2">Dashboard</h1>
+        <h1 className="lg:text-6xl font-bold text-center mb-2">FocusBoard Dashboard</h1>
         <button
           onClick={logout}
           className="block mx-auto mb-6 bg-red-500 text-black px-4 py-2 rounded"
