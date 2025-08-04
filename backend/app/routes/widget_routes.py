@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+import os, httpx
 from sqlalchemy.orm import Session
 import httpx, random
 from fastapi.responses import JSONResponse
@@ -71,3 +72,27 @@ def update_widget_order(
             user_widget.position = update.position
     db.commit()
     return {"message": "Widget updated"}
+
+@router.get("/weather")
+async def weather(city: str = Query(...)):
+    key = os.getenv("OPENWEATHER_API_KEY")
+    if not key:
+        raise HTTPException(status_code=500, detail="OPENWEATHER_API_KEY not set")
+    url = f"https://api.openweathermap.org/data/2.5/weather?q=Chicago&appid=0df44caddd318abeea5caa67791d0f03&units=metric"
+    async with httpx.AsyncClient(timeout=10) as client:
+        r = await client.get(url)
+    if r.status_code != 200:
+        raise HTTPException(status_code=r.status_code, detail="weather upstream error")
+    return r.json()
+
+@router.get("/news")
+async def news():
+    key = os.getenv("NEWS_API_KEY")
+    if not key:
+        raise HTTPException(status_code=500, detail="NEWS_API_KEY not set")
+    url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey=6bed20eabe9346dd819dc277096834e7"
+    async with httpx.AsyncClient(timeout=10) as client:
+        r = await client.get(url)
+    if r.status_code != 200:
+        raise HTTPException(status_code=r.status_code, detail="news upstream error")
+    return r.json()

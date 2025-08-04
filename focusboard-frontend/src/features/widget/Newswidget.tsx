@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-
-const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+import api from "../../api/axiosinstance";
+// const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 
 type Props = {
   compact?: boolean;
@@ -11,12 +11,11 @@ export default function Newswidget({ compact = false }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`)
-      .then(res => res.json())
-      .then(data => {
-        setArticles(data.articles.slice(0, 5));
-        setLoading(false);
-      })
+    api.get("/widgets/news")
+    .then(res => {
+      setArticles(res.data?.articles?.slice(0, 5) || []);
+       setLoading(false);
+     })
       .catch(err => {
         console.error("News fetch failed", err);
         setLoading(false);

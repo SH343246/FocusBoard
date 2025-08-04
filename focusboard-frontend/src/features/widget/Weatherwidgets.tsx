@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+// const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+import api from "../../api/axiosinstance";
 const CITY = import.meta.env.VITE_DEFAULT_CITY;
 
 type Props = {
@@ -11,14 +12,11 @@ export default function WeatherWidget({ compact = false }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`
-    )
-      .then(res => res.json())
-      .then(data => {
-        setWeather(data);
-        setLoading(false);
-      })
+    api.get("/widgets/weather", { params: { city: CITY } })
+     .then(res => {
+       setWeather(res.data);
+       setLoading(false);
+     })
       .catch(err => {
         console.error("Weather fetch failed", err);
         setLoading(false);
