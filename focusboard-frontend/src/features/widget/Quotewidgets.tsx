@@ -15,7 +15,7 @@ export default function QuoteWidget({ compact = false }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/widgets/quotes`)
+  fetch("/widgets/quotes")
     .then(res => res.json())
     .then(data => {
       setQuote({ text: data.text, author: data.author });
