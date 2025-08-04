@@ -1,0 +1,25 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5b7d0" stop-opacity="0.9"></stop>
+      <stop offset="100%" stop-color="#a0d8ff" stop-opacity="0.9"></stop>
+    </linearGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
+      <feComposite in="blur" in2="SourceGraphic" operator="over"></feComposite>
+    </filter>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.15)"></feDropShadow>
+    </filter>
+    <mask id="roundMask">
+      <rect x="0" y="0" width="256" height="256" rx="48" ry="48" fill="white"></rect>
+    </mask>
+  </defs>
+
+  <rect x="16" y="16" width="224" height="224" rx="48" ry="48" fill="white" fill-opacity="0.05" stroke="rgba(255,255,255,0.3)" stroke-width="2" filter="url(#shadow)"></rect>
+  <rect x="16" y="16" width="224" height="224" rx="48" ry="48" fill="url(#grad)" mask="url(#roundMask)" filter="url(#blur)"></rect>
+
+  <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="120" fill="white" fill-opacity="0.95" letter-spacing="-4">
+    F
+  </text>
+</svg>
