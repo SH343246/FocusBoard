@@ -36,6 +36,10 @@ FRONTEND_DIST = os.getenv("FRONTEND_DIST", "static")
 static_path = Path(__file__).parent.parent / FRONTEND_DIST
 app.mount("/assets", StaticFiles(directory=static_path / "assets"), name="assets")
 
+@app.get("/favicon.svg", include_in_schema=False)
+def favicon():
+    return FileResponse(static_path / "favicon.svg", media_type="image/svg+xml")
+
 
 @app.get("/", include_in_schema=False)
 def root_index():
