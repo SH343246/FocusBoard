@@ -9,7 +9,7 @@ export default function NasaWidget({ compact = false }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")
+    fetch("https://api.nasa.gov/planetary/apod?api_key=M4iQyPo22XfRTBy4W6v668o4XeHz6ubsaN9CIRGV")
       .then(res => res.json())
       .then(data => {
         setPhoto(data);
