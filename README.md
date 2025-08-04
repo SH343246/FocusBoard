@@ -28,8 +28,14 @@ Auth: Google OAuth (Authlib)
 Infra: Render (web service + managed Postgres)
 
 
-screenshots/gif
+### Login
+![Login animation](Gifs/Login.gif)
 
+### Add Habit & Todo
+![Add habit and todo](Gifs/Add-A-Habit-and-Todo.gif)
+
+### Move / Collapse Widgets
+![Rearranging widgets](Gifs/Move-and-Collapse-Widgets.gif)
 Set it up yourself (optional)
 
 Prereqs
