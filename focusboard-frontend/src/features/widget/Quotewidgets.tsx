@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sun } from "lucide-react";
+import api from "../../api/axiosinstance";
 type Quote = {
   text: string;
   author: string;
@@ -15,17 +16,16 @@ export default function QuoteWidget({ compact = false }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  fetch("/widgets/quotes")
-    .then(res => res.json())
-    .then(data => {
-      setQuote({ text: data.text, author: data.author });
-      setLoading(false);
-    })
-    .catch(err => {
-      console.error("Quote fetch failed", err);
-      setLoading(false);
-    });
-}, []);
+  api.get("/widgets/quotes")
+      .then(res => {
+        setQuote({ text: res.data.text, author: res.data.author });
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Quote fetch failed", err);
+        setLoading(false);
+      });
+  }, []);
 
 if (!quote) return <p>Could not load quote.</p>;
 if (loading) return <p>Loading quote...</p>;
