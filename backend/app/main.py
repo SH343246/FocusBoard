@@ -6,7 +6,7 @@ from fastapi import FastAPI, APIRouter, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-
+from sqlalchemy.orm import Session
 
 from app.routes import auth
 from app.routes.habit_routes import router as habit_routes
@@ -53,14 +53,23 @@ def spa_catch_all(full_path: str):
     return FileResponse(static_path / "index.html")
 
 
-def seed_widgets():
+from sqlalchemy.orm import Session
+from app.models import Widget
+
+@app.on_event("startup")
+def ensure_widgets_seed():
     db = next(get_db())
-    widget_types = [
-        {"type": "weather", "description": "displays current weather"},
-        {"type": "quote", "description": "a motivational quote"},
-        {"type": "news", "description": "news headlines"},
+    data = [
+        {"name":"Crypto","description":"crypto prices","slug":"crypto"},
+        {"name":"Weather","description":"weather","slug":"weather"},
+        {"name":"Nasa","description":"nasa apod","slug":"nasa"},
+        {"name":"News","description":"top headlines","slug":"news"},
+        {"name":"Timezone","description":"local time","slug":"timezone"},
+        {"name":"Quote","description":"daily quote","slug":"quote"},
+        {"name":"Joke","description":"random joke","slug":"joke"},
     ]
-    for w in widget_types:
-        if not db.query(Widget).filter_by(type=w["type"]).first():
+    for w in data:
+        if not db.query(Widget).filter_by(slug=w["slug"]).first():
             db.add(Widget(**w))
     db.commit()
+
