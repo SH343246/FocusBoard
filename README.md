@@ -1,8 +1,8 @@
-### Focusboard
+# Focusboard
 A minimalist productivity dashboard with Todos, Habits, and customizable Widgets (Weather, News, NASA APOD, Crypto, Time, Quotes, Jokes).
 Built with React + TypeScript (frontend) and FastAPI (backend) on PostgreSQL. OAuth is done via Google, and Deployment is on Render.
 
-## Features
+### Features
 Google OAuth login (access + refresh tokens)
 
 Todos: create, update, delete
@@ -16,7 +16,7 @@ Backend proxy for external APIs (no frontend keys)
 
 Production build serves SPA + API from one service
 
-## Tech
+### Tech
 Frontend: React, TypeScript, React Query, Tailwind, Vite
 
 Backend: FastAPI, SQLAlchemy, Pydantic
@@ -28,31 +28,36 @@ Auth: Google OAuth (Authlib)
 Infra: Render (web service + managed Postgres)
 
 
-### Login
+## Login
 ![Login animation](Gifs/Login.gif)
 
-### Add Habit & Todo
+## Add Habit & Todo
 ![Add habit and todo](Gifs/Add-A-Habit-and-Todo.gif)
 
-### Move / Collapse Widgets
+## Move / Collapse Widgets
 ![Rearranging widgets](Gifs/Move-and-Collapse-Widgets.gif)
 
-### Set it up yourself (optional)
+## Set it up yourself (optional)
 
-## Prereqs
+### Prereqs
 Node.js (for frontend)
+
 Python 3.11+ (for backend)
+
 PostgreSQL (or another hosted instance)
+
 '.env' file (example below)
 
-## Steps
+### Steps
 
-# 1. Clone the repo:
+### 1. Clone the repo:
    ```bash
    git clone https://github.com/youruser/focusboard.git
    cd focusboard
+```
 
-# 2. Copy this .env template and fill in the keys:
+### 2. Copy this .env template and fill in the keys:
+   ```bash
    DATABASE_URL=postgresql://user:password@host:port/dbname?sslmode=require
    GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
    GOOGLE_CLIENT_SECRET=your-google-client-secret
@@ -63,20 +68,22 @@ PostgreSQL (or another hosted instance)
    NEWS_API_KEY=your_newsapi_key
    OPENWEATHER_API_KEY=your_openweather_key
    VITE_DEFAULT_CITY=Chicago
-
-# 3. Backend:
+```
+### 3. Backend:
+   ```bash
    cd backend
    pip install -r requirements.txt
    uvicorn app.main:app --reload
-
-# 4. Frontend:
+```
+### 4. Frontend:
+   ```bash
    cd ../frontend
    npm install
    npm run dev
+```
+### 5. Open http://localhost:5173 and log in with Google.
 
-# 5. Open http://localhost:5173 and log in with Google.
-
-# Notes:
+## Notes:
    * You can seed quotes/widgets manually via SQL if needed.
    * Tokens are stored in localStorage and refresh logic is built in.
    * Your Google OAuth app needs to have the correct redirect URIs put in.
