@@ -27,17 +27,18 @@ Auth: Google OAuth (Authlib)
 
 Infra: Render (web service + managed Postgres)
 
+## Some Website Features Shown
 
-## Login
+### Login
 ![Login animation](Gifs/Login.gif)
 
-## Add Habit & Todo
+### Add Habit & Todo
 ![Add habit and todo](Gifs/Add-A-Habit-and-Todo.gif)
 
-## Move / Collapse Widgets
+### Move / Collapse Widgets
 ![Rearranging widgets](Gifs/Move-and-Collapse-Widgets.gif)
 
-## FocusBoard website: https://focusboard.onrender.com
+### FocusBoard website: https://focusboard.onrender.com
 
 ## Set it up yourself (optional)
 
