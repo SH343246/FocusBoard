@@ -5,7 +5,7 @@ const baseURL =
   import.meta.env.VITE_API_BASE ??
   (import.meta.env.DEV
     ? "http://localhost:8000"                     
-    : "https://focusboard.onrender.com"); 
+    : "https://focusboard.onrender.com/api"); 
 
 const api = axios.create({
   baseURL,
