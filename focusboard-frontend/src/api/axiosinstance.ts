@@ -1,8 +1,11 @@
 import axios from "axios";
 import { logout } from "../utils/Logout";
 
-const baseURL = import.meta.env.DEV ? "http://localhost:8000/api" : "/api"; 
-
+const baseURL =
+  import.meta.env.VITE_API_BASE ??
+  (import.meta.env.DEV
+    ? "http://localhost:8000"                     
+    : "https://focusboard.onrender.com"); 
 
 const api = axios.create({
   baseURL,
