@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-import os, httpx
+import os, httpx, random
 from sqlalchemy.orm import Session
-import httpx, random
 from fastapi.responses import JSONResponse
-from app.schemas import WidgetOrderUpdate
 
 from app.db import get_db
 from app.models import Widget, UserWidget, Quote
 from utils.token_verification import get_current_user
-from app.schemas import WidgetRead, UserWidgetRead, UserWidgetUpdate
+from app.schemas import WidgetRead, UserWidgetRead, UserWidgetUpdate, WidgetOrderUpdate
 
 router = APIRouter(prefix="/widgets", tags=["widgets"])
 
@@ -16,9 +14,27 @@ router = APIRouter(prefix="/widgets", tags=["widgets"])
 def get_all_widgets(db: Session = Depends(get_db)):
     return db.query(Widget).all()
 
-@router.get("/me", response_model=list[UserWidgetRead])
+def serialize_user_widget(uw: UserWidget):
+    w = uw.widget
+    return {
+        "id": uw.id,
+        "type": w.name,
+        "enabled": uw.enabled,
+        "position": uw.position,
+        "props": uw.style or {},
+    }
+
+@router.get("/me")
 def get_user_widgets(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    return db.query(UserWidget).filter(UserWidget.user_id == current_user["id"]).all()
+    rows = (
+        db.query(UserWidget)
+        .join(Widget, Widget.id == UserWidget.widget_id)
+        .filter(UserWidget.user_id == current_user["id"])
+        .order_by(UserWidget.position.asc().nulls_last())
+        .all()
+    )
+    return [serialize_user_widget(r) for r in rows]
+
 @router.put("/{user_widget_id}", response_model=UserWidgetRead)
 def update_user_widget(
     user_widget_id: int,
@@ -30,31 +46,23 @@ def update_user_widget(
         UserWidget.id == user_widget_id,
         UserWidget.user_id == current_user["id"]
     ).first()
-
     if user_widget is None:
         raise HTTPException(status_code=404, detail="User widget setting not found")
-
     if update_data.enabled is not None:
         user_widget.enabled = update_data.enabled
     if update_data.style is not None:
         user_widget.style = update_data.style
-
     db.commit()
     db.refresh(user_widget)
     return user_widget
-
 
 @router.get("/quotes")
 def get_quote(db: Session = Depends(get_db)):
     quotes = db.query(Quote).all()
     if not quotes:
         raise HTTPException(status_code=404, detail="No quotes found")
-    
     selected = random.choice(quotes)
-    return {
-        "text": selected.text,
-        "author": selected.author or "Unknown"
-    }
+    return {"text": selected.text, "author": selected.author or "Unknown"}
 
 @router.patch("/order")
 def update_widget_order(
@@ -67,7 +75,6 @@ def update_widget_order(
             id=update.id,
             user_id=current_user["id"]
         ).first()
-
         if user_widget:
             user_widget.position = update.position
     db.commit()
@@ -87,8 +94,6 @@ async def weather(city: str | None = Query(default=None)):
         raise HTTPException(status_code=r.status_code, detail="weather upstream error")
     return r.json()
 
-
-
 @router.get("/news")
 async def news():
     key = os.getenv("NEWS_API_KEY")
@@ -100,4 +105,3 @@ async def news():
     if r.status_code != 200:
         raise HTTPException(status_code=r.status_code, detail="news upstream error")
     return r.json()
-

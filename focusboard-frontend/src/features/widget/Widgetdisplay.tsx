@@ -1,29 +1,35 @@
-import { useWidgets } from "./Userwidgets"; 
-import WeatherWidget from "./Weatherwidgets";
-import QuoteWidget from "./Quotewidgets";
-import type { UserWidget } from "../habits/types";
+import { useWidgets } from "./Userwidgets";
+import { WidgetRegistry } from "./WidgetRegistry";
+type UserWidgetItem = {
+  id: number;
+  enabled?: boolean;
+  type?: string | null;    
+  widget?: { name?: string | null } | null; 
+};
 
 export default function WidgetRenderer() {
   const { data: userWidgets = [], isLoading } = useWidgets();
 
-  console.log("userWidgets", userWidgets);
-
-
   if (isLoading) return <p>Loading dashboard widgets...</p>;
+
+  const list: UserWidgetItem[] = Array.isArray(userWidgets) ? userWidgets : [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {userWidgets.map((uw: UserWidget) => {
-        if (!uw.enabled) return null;
+      {list.map((uw) => {
+        if (!uw?.enabled) return null;
+        const key = uw.type ?? uw.widget?.name ?? null;
+        const Comp = key ? WidgetRegistry[key] : undefined;//fallback
 
-        switch (uw.widget.name.toLowerCase()) {
-          case "weather":
-            return <WeatherWidget key={uw.id} />;
-          case "quote":
-           return <QuoteWidget key={uw.id} />;
-          default:
-            return null;
+        if (!Comp) {
+          return (
+            <div key={uw.id} className="rounded-xl border p-4">
+              Unknown widget: {String(key)}
+            </div>
+          );
         }
+
+        return <Comp key={uw.id} />;
       })}
     </div>
   );
