@@ -1,11 +1,11 @@
 
-FROM node:20-alpine AS frontend-build
+FROM us-docker.pkg.dev/render-images/registry/node:20-alpine AS frontend-build
 WORKDIR /frontend
 COPY focusboard-frontend/ .
 RUN npm ci
-RUN npm run build          
+RUN npm run build
 
-FROM python:3.11-slim AS backend
+FROM us-docker.pkg.dev/render-images/registry/python:3.11-slim AS backend
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
@@ -18,7 +18,7 @@ RUN apt-get update \
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY backend/ .                      
+COPY backend/ .
 
 COPY --from=frontend-build /frontend/dist ./static
 
