@@ -1,11 +1,11 @@
 
-FROM us-docker.pkg.dev/render-images/registry/node:20-alpine AS frontend-build
+FROM node:20-alpine AS frontend-build
 WORKDIR /frontend
 COPY focusboard-frontend/ .
 RUN npm ci
 RUN npm run build
 
-FROM us-docker.pkg.dev/render-images/registry/python:3.11-slim AS backend
+FROM python:3.11-slim AS backend
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
