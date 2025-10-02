@@ -103,7 +103,7 @@ const updates: { id: number; position: number }[] = newOrder.map(
     setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const restoreHidden = (id: number) => {
+  /* const restoreHidden = (id: number) => {
     const widget = data.find((w) => w.widget.id === id);
     if (widget) {
       updateWidget(
@@ -111,7 +111,14 @@ const updates: { id: number; position: number }[] = newOrder.map(
         { onSuccess: () => refetch() }
       );
     }
-  };
+  }; */
+
+   const restoreHidden = (userWidgetId: number) => {
+   updateWidget(
+     { id: userWidgetId, enabled: true },
+     { onSuccess: () => refetch() }
+   );
+ };
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
@@ -123,8 +130,9 @@ const updates: { id: number; position: number }[] = newOrder.map(
           {order.map((id) => {
   const uw = enabled.find((w) => w.id === id);
   if (!uw) return null;
+ const Widget = map[(uw.type ?? "").toLowerCase() as keyof typeof map];
 
-  const Widget = map[uw.widget.name as keyof typeof map];
+  //const Widget = map[uw.type as keyof typeof map];
   const isCollapsed = collapsed[uw.id];
 
             return (
@@ -139,7 +147,7 @@ const updates: { id: number; position: number }[] = newOrder.map(
              </button>
 
                   <h2 className="text-lg font-semibold mb-2 capitalize">
-                    {uw.widget.name}
+                    {uw.type}
                   </h2>
 
                   {!isCollapsed && <Widget />}
@@ -153,10 +161,10 @@ const updates: { id: number; position: number }[] = newOrder.map(
         <div className="mt-6">
           <h3 className="text-sm font-semibold text-gray-600 mb-2">Hidden Widgets</h3>
           {disabled.map((uw) => (
-            <div key={uw.widget.id} className="flex justify-between items-center bg-white/20 p-3 rounded-xl text-sm backdrop-blur-md">
-              <span className="capitalize">{uw.widget.name}</span>
+            <div key={uw.id} className="flex justify-between items-center bg-white/20 p-3 rounded-xl text-sm backdrop-blur-md">
+              <span className="capitalize">{uw.type}</span>
               <button
-                onClick={() => restoreHidden(uw.widget.id)}
+                onClick={() => restoreHidden(uw.id)}
                 className="px-2 py-0.5 text-xs rounded bg-green-600 text-white"
               >
                 Show
