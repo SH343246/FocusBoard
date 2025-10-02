@@ -4,6 +4,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  type DragEndEvent,   
+
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -27,7 +29,6 @@ import CryptoWidget from "./Cryptowidget";
 import NasaWidget from "./Nasapicwidget";
 import JokeWidget from "./Jokewidget";
 
-import type { UserWidget } from "../habits/types";
 
 const map = {
   weather: WeatherWidget,
@@ -83,12 +84,12 @@ export default function EnabledWidgets() {
   }, [enabled]);
 const sensors = useSensors(useSensor(PointerSensor));
 
-  function onDragEnd(ev: any) {
+  function onDragEnd(ev: DragEndEvent) {
     const { active, over } = ev;
     if (!over || active.id === over.id) return;
 
-    const oldIdx = order.indexOf(active.id);
-    const newIdx = order.indexOf(over.id);
+    const oldIdx = order.indexOf(active.id as number);
+    const newIdx = order.indexOf(over.id as number);
     const newOrder = arrayMove(order, oldIdx, newIdx);
     setOrder(newOrder);
 const updates: { id: number; position: number }[] = newOrder.map(

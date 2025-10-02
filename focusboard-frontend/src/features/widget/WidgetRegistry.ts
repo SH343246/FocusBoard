@@ -1,3 +1,4 @@
+// src/features/widget/WidgetRegistry.ts
 import CryptoWidget from "./Cryptowidget";
 import WeatherWidget from "./Weatherwidgets";
 import NasaWidget from "./Nasapicwidget";
@@ -6,11 +7,9 @@ import TimezoneWidget from "./Timezonewidget";
 import QuoteWidget from "./Quotewidgets";
 import JokeWidget from "./Jokewidget";
 
-export type WidgetProps = {
-  compact?: boolean;
-} & Record<string, unknown>;
+export type WidgetProps = { compact?: boolean };
 
-const registry = {
+export const WidgetRegistry: Record<string, React.ComponentType<WidgetProps>> = {
   Crypto: CryptoWidget,
   Weather: WeatherWidget,
   Nasa: NasaWidget,
@@ -19,7 +18,8 @@ const registry = {
   Quote: QuoteWidget,
   Joke: JokeWidget,
   Clock: TimezoneWidget,
-} as const;
+};
 
-export const WidgetRegistry = //Need a prop 
-  registry as unknown as Record<string, React.ComponentType<WidgetProps>>;
+// Optional: case-insensitive lookup helper
+export const WidgetRegistryLC: Record<string, React.ComponentType<WidgetProps>> =
+  Object.fromEntries(Object.entries(WidgetRegistry).map(([k, v]) => [k.toLowerCase(), v]));
