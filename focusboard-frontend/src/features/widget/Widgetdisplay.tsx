@@ -14,23 +14,27 @@ export default function WidgetRenderer() {
 
   const list: UserWidgetItem[] = Array.isArray(userWidgets) ? userWidgets : [];
 
-  return (
+    return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {list.map((uw) => {
-        if (!uw?.enabled) return null;
-        const key = uw.type ?? uw.widget?.name ?? null;
-        const Comp = key ? WidgetRegistry[key] : undefined;//fallback
+{userWidgets.map((uw: UserWidget) => {
+  if (!uw?.enabled) return null;
 
-        if (!Comp) {
-          return (
-            <div key={uw.id} className="rounded-xl border p-4">
-              Unknown widget: {String(key)}
-            </div>
-          );
-        }
+  const widgetName = uw?.widget?.name?.toLowerCase?.();
+  if (!widgetName) {
+    // Optional: log once for debugging
+    console.warn("Widget missing name:", uw);
+    return null;
+  }
 
-        return <Comp key={uw.id} />;
-      })}
+  switch (widgetName) {
+    case "weather":
+      return <WeatherWidget key={uw.id} />;
+    case "quote":
+      return <QuoteWidget key={uw.id} />;
+    default:
+      return null;
+  }
+})}
     </div>
   );
 }

@@ -91,13 +91,9 @@ const sensors = useSensors(useSensor(PointerSensor));
     const newIdx = order.indexOf(over.id);
     const newOrder = arrayMove(order, oldIdx, newIdx);
     setOrder(newOrder);
-const updates: { id: number; position: number }[] = newOrder
-  .map((userWidgetId, i) => {
-    const w = data.find((d) => d.id === userWidgetId);
-    return w ? { id: w.widget.id, position: i } : null;
-  })
-  .filter((u): u is { id: number; position: number } => u !== null);
-
+const updates: { id: number; position: number }[] = newOrder.map(
+  (userWidgetId, i) => ({ id: userWidgetId, position: i })
+);
 
     updateOrder(updates);
   }
