@@ -1,6 +1,8 @@
-import { use, useState } from "react";
+import {  useState } from "react";
 import { createHabit } from "./Habitservice";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useExperiment from "@/hooks/useExperiment";
+
 
 
 
@@ -13,12 +15,25 @@ export default function CreateHabitForm() {
   const [error1, setError] = useState("");
   const [description, setDescription] = useState("");
 
+  const userId = localStorage.getItem("anon_id") ?? (() => {
+  const id = crypto.randomUUID()
+  localStorage.setItem("anon_id", id)
+  return id
+})()
+
+  const {track} = useExperiment("2381d542-7d30-4fb2-819f-992781d6bc83", userId )
+
+
+
 const{mutate, isPending, isError, error, isSuccess} = useMutation({
   mutationFn: createHabit,
   onSuccess: () => {
+    track("conversion")
     queryClient.invalidateQueries({queryKey: ["habits"]}); 
   },
 });
+
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
